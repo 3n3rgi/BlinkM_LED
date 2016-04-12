@@ -46,7 +46,7 @@ void loop() {
     volts = reading * 3.3 / 4096.0;
     Serial.print(volts);
     Serial.print(" - ");
-    Serial.print(test(2));
+    // Serial.print(test(2));
     Serial.print(" - ");
     delay(1500);
 }
@@ -84,10 +84,10 @@ void transmitColor(byte red, byte green, byte blue) {
 int changeColor(String color_name) {
 
     // publish
-    //Particle.publish("newColor");
+    Particle.publish("newColor");
 
     // console update
-    // printSerial(color_name);
+    printSerial(color_name);
 
     if (color_name == "red") {
         transmitColor(0xff, 0x00, 0x00);

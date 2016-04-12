@@ -38,6 +38,30 @@ void setup() {
     Wire.beginTransmission(0x00);
     Wire.write('o');
     Wire.endTransmission();
+
+    // Running a built-in scripts
+    Wire.beginTransmission(0x00);
+    // fade to a color
+    // Wire.write('c');
+
+    // set fade speed
+    Wire.write('f');
+    // set the RGB bytes
+    Wire.write(0x09);
+
+
+    // set tiem adjust
+    Wire.write('t');
+    // set the RGB bytes
+    Wire.write(0xAA);
+
+    Wire.write('p');
+    // set the RGB bytes
+    Wire.write(0x05);
+    Wire.write(0x00);
+    Wire.write(0x00);
+    // send the transmission
+    Wire.endTransmission();
 }
 
 // runs continuously
@@ -46,9 +70,7 @@ void loop() {
     volts = reading * 3.3 / 4096.0;
     Serial.print(volts);
     Serial.print(" - ");
-    // Serial.print(test(2));
-    Serial.print(" - ");
-    delay(1500);
+    delay(500);
 }
 
 

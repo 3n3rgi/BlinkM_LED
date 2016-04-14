@@ -3,6 +3,121 @@
 //Library from BlinkM
 #include "BlinkM_funcs.h"
 
+
+
+// ===============================================
+String statusArray [3] = {"off", "on", "error"};
+String colorArray [8] = {"white", "red", "green", "blue", "cyan", "magenta", "yellow", "black"};
+String actionArray [3]= {"solid", "blink", "breathe"};
+
+
+// defining array of "status"
+struct channel {
+  String status[3];
+  String color[3];
+  String action[3];
+};
+
+channel IPC_LED_1 = {
+  {"off", "on", "error"},
+  {"white", "green", "red"},
+  {"solid", "blink", "breathe"}
+};
+
+// Serial: this is the COMMAND variable
+// it holds the most recent command from the serial_1 port
+String serial1Command = "";
+
+
+
+// ===============================================
+void setup() {
+
+    // Open serial port (via USB port)
+    Serial.begin(9600);
+
+    // Open serial port 1 (via Tx/Rx pins)
+    Serial1.begin(9600);
+
+    // start I2C com with the BlinkM smart LED
+    BlinkM_begin();
+    BlinkM_stopScript(0x00);
+}
+
+
+
+// ===============================================
+// runs continuously
+void loop() {
+
+}
+
+
+
+// ===============================================
+// Interrupt for serial 0 (USB)
+// called when data is rady to be read
+void serialEvent()
+{
+    char c = Serial.read();
+    //Serial.println(c);
+    Serial1.write(c);
+}
+
+// Interrupt for serial 1 (Tx/Rx)
+// called when data is rady to be read
+void serialEvent1()
+{
+    char c = Serial1.read();
+    if (c != ';')
+    {
+      serial1Command = serial1Command + c;
+      Serial.print(c);
+    }
+    else
+    {
+        parseSerialCommand(serial1Command);
+        serial1Command = "";
+        Serial.println("");
+    }
+}
+
+// Parse the command read over serial1
+void parseSerialCommand(String command) {
+  Serial.print("\nNew command is: ");
+  Serial.print(command);
+  Serial.print("\n");
+
+  if (command == "on")
+  {
+    BlinkM_fadeToRGB(0x00, 0x00, 0xff, 0xff);
+  }
+  else if (command == "off")
+  {
+    BlinkM_fadeToRGB(0x00, 0x00, 0x00, 0x00);
+  }
+  else if (command == "error")
+  {
+    BlinkM_fadeToRGB(0x00, 0xff, 0x00, 0x00);
+  }
+  else
+  {
+    BlinkM_fadeToRGB(0x00, 0x00, 0x00, 0xff);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+/*
+// defining array of colors
+
 // MY: defining random array of colors
 //String myColors[2] = {"blue", "red"};
 
@@ -149,3 +264,4 @@ int changeColor(String color_name) {
         transmitColor(0x04, 0x04, 0x04);
     }
 }
+*/
